@@ -1,0 +1,15 @@
+<ng-container
+*ngFor="let user of UsersService.loadUsers | async">
+    <app-user-card [user]="user" (id)="deleteUser($event)"></app-user-card>
+</ng-container>
+
+<div class="card__create">
+    <button mat-button color="primary" (click)="addUserDialog()">Create User</button>
+</div>
+    
+         
+
+
+   
+
+    
