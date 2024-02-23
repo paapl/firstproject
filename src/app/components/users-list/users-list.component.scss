@@ -1,10 +1,9 @@
 :host{
+    margin: 0 auto;
     display: flex;
     flex-wrap: wrap;
-    gap: 10px;
-    width: 80%;
-    align-items: center;
-    justify-content: center;
+    gap: 20px;
+    width: 70dvw;
 }
 
 .card__create{

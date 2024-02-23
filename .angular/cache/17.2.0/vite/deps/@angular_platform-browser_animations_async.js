@@ -1,10 +1,10 @@
 import {
   DomRendererFactory2
-} from "./chunk-VIBMEPRK.js";
-import "./chunk-VPDIPHGJ.js";
+} from "./chunk-VD5HY7AQ.js";
+import "./chunk-65KGLH7J.js";
 import {
   DOCUMENT
-} from "./chunk-5R5PFFVT.js";
+} from "./chunk-GBYLXCNQ.js";
 import {
   ANIMATION_MODULE_TYPE,
   ChangeDetectionScheduler,
@@ -14,10 +14,11 @@ import {
   RuntimeError,
   inject,
   makeEnvironmentProviders,
+  performanceMarkFeature,
   setClassMetadata,
   ɵɵdefineInjectable,
   ɵɵinvalidFactory
-} from "./chunk-MZ4YLI6P.js";
+} from "./chunk-NYIFMCVF.js";
 import "./chunk-SXIXOCJ4.js";
 
 // node_modules/@angular/platform-browser/fesm2022/animations/async.mjs
@@ -46,7 +47,7 @@ var _AsyncAnimationRendererFactory = class _AsyncAnimationRendererFactory {
    * @internal
    */
   loadImpl() {
-    const moduleImpl = this.moduleImpl ?? import("./browser-VJT3FKLG.js");
+    const moduleImpl = this.moduleImpl ?? import("./browser-6SL6SWSK.js");
     return moduleImpl.catch((e) => {
       throw new RuntimeError(5300, (typeof ngDevMode === "undefined" || ngDevMode) && "Async loading for animations package was enabled, but loading failed. Angular falls back to using regular rendering. No animations will be displayed and their styles won't be applied.");
     }).then(({
@@ -210,6 +211,7 @@ var DynamicDelegationRenderer = class {
   }
 };
 function provideAnimationsAsync(type = "animations") {
+  performanceMarkFeature("NgAsyncAnimations");
   return makeEnvironmentProviders([{
     provide: RendererFactory2,
     useFactory: (doc, renderer, zone) => {
@@ -229,7 +231,7 @@ export {
 
 @angular/platform-browser/fesm2022/animations/async.mjs:
   (**
-   * @license Angular v17.2.1
+   * @license Angular v17.2.2
    * (c) 2010-2022 Google LLC. https://angular.io/
    * License: MIT
    *)

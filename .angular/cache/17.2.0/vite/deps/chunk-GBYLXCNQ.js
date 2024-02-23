@@ -57,7 +57,7 @@ import {
   ɵɵinject,
   ɵɵinjectAttribute,
   ɵɵstyleProp
-} from "./chunk-MZ4YLI6P.js";
+} from "./chunk-NYIFMCVF.js";
 import {
   __spreadProps,
   __spreadValues
@@ -3651,7 +3651,7 @@ function isPlatformWorkerApp(platformId) {
 function isPlatformWorkerUi(platformId) {
   return platformId === PLATFORM_WORKER_UI_ID;
 }
-var VERSION = new Version("17.2.1");
+var VERSION = new Version("17.2.2");
 var _ViewportScroller = class _ViewportScroller {
 };
 _ViewportScroller.ɵprov = ɵɵdefineInjectable({
@@ -4291,7 +4291,7 @@ var _NgOptimizedImage = class _NgOptimizedImage {
       }
     }
     if (this.placeholder) {
-      this.removePlaceholderOnLoad(this, this.imgElement, this.renderer);
+      this.removePlaceholderOnLoad(this.imgElement);
     }
     this.setHostAttributes();
   }
@@ -4449,17 +4449,16 @@ var _NgOptimizedImage = class _NgOptimizedImage {
     }
     return Boolean(placeholderConfig.blur);
   }
-  removePlaceholderOnLoad(dir, img, renderer) {
-    const removeLoadListenerFn = renderer.listen(img, "load", () => {
+  removePlaceholderOnLoad(img) {
+    const callback = () => {
+      const changeDetectorRef = this.injector.get(ChangeDetectorRef);
       removeLoadListenerFn();
       removeErrorListenerFn();
-      dir.placeholder = false;
-    });
-    const removeErrorListenerFn = renderer.listen(img, "error", () => {
-      removeLoadListenerFn();
-      removeErrorListenerFn();
-      dir.placeholder = false;
-    });
+      this.placeholder = false;
+      changeDetectorRef.markForCheck();
+    };
+    const removeLoadListenerFn = this.renderer.listen(img, "load", callback);
+    const removeErrorListenerFn = this.renderer.listen(img, "error", callback);
   }
   /** @nodoc */
   ngOnDestroy() {
@@ -4948,9 +4947,9 @@ export {
 
 @angular/common/fesm2022/common.mjs:
   (**
-   * @license Angular v17.2.1
+   * @license Angular v17.2.2
    * (c) 2010-2022 Google LLC. https://angular.io/
    * License: MIT
    *)
 */
-//# sourceMappingURL=chunk-5R5PFFVT.js.map
+//# sourceMappingURL=chunk-GBYLXCNQ.js.map

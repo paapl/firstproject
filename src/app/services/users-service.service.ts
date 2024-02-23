@@ -1,12 +1,12 @@
-import { Injectable, inject } from '@angular/core';
+import { Injectable, OnInit, inject } from '@angular/core';
 import { UserApiServiceService } from './user-api-service.service';
 import { IUser } from '../interface/iuser';
-import { BehaviorSubject, tap, switchMap, shareReplay } from 'rxjs';
+import { BehaviorSubject, tap, switchMap, shareReplay, map, Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
-export class UsersServiceService {
+export class UsersServiceService{
   
   private UserApiServise = inject(UserApiServiceService);
 
@@ -23,5 +23,10 @@ export class UsersServiceService {
     const upDataUsers = this.usersSubject$.value.filter(
     (user: IUser) => user.id !== id);
     this.usersSubject$.next(upDataUsers);
+  }
+
+  public addNewUser(data: IUser): void{
+    const newUser = this.usersSubject$.value.concat(data);
+    this.usersSubject$.next(newUser);
   }
 }

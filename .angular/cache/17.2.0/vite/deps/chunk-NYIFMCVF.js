@@ -6349,7 +6349,9 @@ function executeContentQueries(tView, tNode, lView) {
       for (let directiveIndex = start; directiveIndex < end; directiveIndex++) {
         const def = tView.data[directiveIndex];
         if (def.contentQueries) {
-          def.contentQueries(1, lView[directiveIndex], directiveIndex);
+          const directiveInstance = lView[directiveIndex];
+          ngDevMode && assertDefined(directiveIndex, "Incorrect reference to a directive defining a content query");
+          def.contentQueries(1, directiveInstance, directiveIndex);
         }
       }
     } finally {
@@ -10578,12 +10580,12 @@ function createRootComponent(componentView, rootComponentDef, rootDirectives, ho
       feature(component, rootComponentDef);
     }
   }
-  executeContentQueries(tView, rootTNode, componentView);
+  executeContentQueries(tView, rootTNode, rootLView);
   return component;
 }
 function setRootNodeAttributes(hostRenderer, componentDef, hostRNode, rootSelectorOrNode) {
   if (rootSelectorOrNode) {
-    setUpAttributes(hostRenderer, hostRNode, ["ng-version", "17.2.1"]);
+    setUpAttributes(hostRenderer, hostRNode, ["ng-version", "17.2.2"]);
   } else {
     const { attrs, classes } = extractAttrsAndClassesFromSelector(componentDef.selectors[0]);
     if (attrs) {
@@ -17906,7 +17908,7 @@ var Version = class {
     this.patch = parts.slice(2).join(".");
   }
 };
-var VERSION = new Version("17.2.1");
+var VERSION = new Version("17.2.2");
 var _Console = class _Console {
   log(message) {
     console.log(message);
@@ -21222,14 +21224,14 @@ export {
 
 @angular/core/fesm2022/primitives/signals.mjs:
   (**
-   * @license Angular v17.2.1
+   * @license Angular v17.2.2
    * (c) 2010-2022 Google LLC. https://angular.io/
    * License: MIT
    *)
 
 @angular/core/fesm2022/core.mjs:
   (**
-   * @license Angular v17.2.1
+   * @license Angular v17.2.2
    * (c) 2010-2022 Google LLC. https://angular.io/
    * License: MIT
    *)
@@ -21252,4 +21254,4 @@ export {
    * found in the LICENSE file at https://angular.io/license
    *)
 */
-//# sourceMappingURL=chunk-MZ4YLI6P.js.map
+//# sourceMappingURL=chunk-NYIFMCVF.js.map

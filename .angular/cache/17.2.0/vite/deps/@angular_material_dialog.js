@@ -7,7 +7,7 @@ import {
   style,
   transition,
   trigger
-} from "./chunk-KO7E32TW.js";
+} from "./chunk-R72GLJ3V.js";
 import {
   A11yModule,
   BidiModule,
@@ -29,11 +29,11 @@ import {
   getRtlScrollAxisType,
   hasModifierKey,
   supportsScrollBehavior
-} from "./chunk-CF75LOJN.js";
+} from "./chunk-C3FUYQ7E.js";
 import {
   DOCUMENT,
   Location
-} from "./chunk-5R5PFFVT.js";
+} from "./chunk-GBYLXCNQ.js";
 import {
   ANIMATION_MODULE_TYPE,
   ApplicationRef,
@@ -92,7 +92,7 @@ import {
   ɵɵstyleProp,
   ɵɵtemplate,
   ɵɵviewQuery
-} from "./chunk-MZ4YLI6P.js";
+} from "./chunk-NYIFMCVF.js";
 import {
   ConnectableObservable,
   Observable,
@@ -3681,12 +3681,15 @@ var FlexibleConnectedPositionStrategy = class {
     if (position.panelClass) {
       this._addPanelClasses(position.panelClass);
     }
-    this._lastPosition = position;
     if (this._positionChanges.observers.length) {
-      const scrollableViewProperties = this._getScrollVisibility();
-      const changeEvent = new ConnectedOverlayPositionChange(position, scrollableViewProperties);
-      this._positionChanges.next(changeEvent);
+      const scrollVisibility = this._getScrollVisibility();
+      if (position !== this._lastPosition || !this._lastScrollVisibility || !compareScrollVisibility(this._lastScrollVisibility, scrollVisibility)) {
+        const changeEvent = new ConnectedOverlayPositionChange(position, scrollVisibility);
+        this._positionChanges.next(changeEvent);
+      }
+      this._lastScrollVisibility = scrollVisibility;
     }
+    this._lastPosition = position;
     this._isInitialRender = false;
   }
   /** Sets the transform origin based on the configured selector and the passed-in position.  */
@@ -4043,6 +4046,12 @@ function getRoundedBoundingClientRect(clientRect) {
     width: Math.floor(clientRect.width),
     height: Math.floor(clientRect.height)
   };
+}
+function compareScrollVisibility(a, b) {
+  if (a === b) {
+    return true;
+  }
+  return a.isOriginClipped === b.isOriginClipped && a.isOriginOutsideView === b.isOriginOutsideView && a.isOverlayClipped === b.isOverlayClipped && a.isOverlayOutsideView === b.isOverlayOutsideView;
 }
 var wrapperClass = "cdk-global-overlay-wrapper";
 var GlobalPositionStrategy = class {
@@ -4522,6 +4531,7 @@ var _CdkConnectedOverlay = class _CdkConnectedOverlay {
     this._detachSubscription = Subscription.EMPTY;
     this._positionSubscription = Subscription.EMPTY;
     this._disposeOnNavigation = false;
+    this._ngZone = inject(NgZone);
     this.viewportMargin = 0;
     this.open = false;
     this.disableClose = false;
@@ -4669,7 +4679,7 @@ var _CdkConnectedOverlay = class _CdkConnectedOverlay {
     this._positionSubscription.unsubscribe();
     if (this.positionChange.observers.length > 0) {
       this._positionSubscription = this._position.positionChanges.pipe(takeWhile(() => this.positionChange.observers.length > 0)).subscribe((position) => {
-        this.positionChange.emit(position);
+        this._ngZone.run(() => this.positionChange.emit(position));
         if (this.positionChange.observers.length === 0) {
           this._positionSubscription.unsubscribe();
         }

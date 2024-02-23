@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
-import { IUser } from '../interface/iuser';
+import { IUser } from '../../../interface/iuser';
 
 @Component({
   selector: 'app-user-card',
@@ -18,10 +18,14 @@ export class UserCardComponent {
 
   @Input() user?: IUser;
   @Output() id = new EventEmitter<number>();
+  @Output() idEdit = new EventEmitter<number>();
 
   getIdCard(id:number | undefined): void{
     this.id.emit(id);
-    console.log(id);
+  }
+
+  editCardUser(id:number | undefined){  
+    this.idEdit.emit(id)
   }
   
 }
