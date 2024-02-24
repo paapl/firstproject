@@ -4,8 +4,10 @@ import { UserApiServiceService } from '../../services/user-api-service.service';
 import { UserCardComponent } from '../UI/user-card/user-card.component';
 import { AsyncPipe, NgForOf } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
-import { CreateedituserComponent } from '../createedituser/createedituser.component';
+import { CreateedituserComponent } from '../createedituser/dialogedit.component';
 import { MatDialog } from '@angular/material/dialog';
+import { map, takeUntil } from 'rxjs';
+import { IUser } from '../../interface/iuser';
 
 
 @Component({
@@ -14,7 +16,6 @@ import { MatDialog } from '@angular/material/dialog';
   imports: [
     UserCardComponent,
     CreateedituserComponent,
-
     NgForOf,
     AsyncPipe,
     MatButtonModule,
@@ -24,39 +25,28 @@ import { MatDialog } from '@angular/material/dialog';
   providers: [UsersServiceService, UserApiServiceService]
 })
 
-export class UsersListComponent {
+export class UsersListComponent{
 
   constructor(public dialog: MatDialog){}
   public UsersService = inject(UsersServiceService);
 
+  // Удаление карточки
   deleteUser(id:number): void{
     this.UsersService.deleteUser(id);
   }
-  editUserCard(id: number):void{
-    this.editUserDialod(id);
+
+  // Открытие формы создания
+  openDialog():void{
+    const dialogRef = this.dialog.open(CreateedituserComponent, {data:{}});
+    dialogRef.afterClosed().pipe(
+      map((myForm: IUser) => {
+        if(myForm != undefined){
+          this.UsersService.addUser(myForm)
+        }
+      }),
+      takeUntil(dialogRef.afterClosed())
+    ).subscribe()
   }
-
-  // addUserDialog(): void{
-  //   const dialogRef = this.dialog.open(CreateedituserComponent, {
-  //     data: {id: new Date().getTime(), name: null, username: null, email: null, phone: null},
-  //   }); 
-
-  //   dialogRef.afterClosed().pipe(
-  //     map((data: IUser) => {
-  //       if(data != undefined ) {this.UsersService.addNewUser(data)}
-  //     })
-  //   ).subscribe();
-  // }
-
-
-  addUserDialog(): void{
-    const dialogRef = this.dialog.open(CreateedituserComponent, { data: {id:new Date().getTime()}}); 
-    dialogRef.afterClosed().subscribe(
-      (data) => console.log(data),
-    )
-  } 
-
-  editUserDialod(id: number) {}
 }
 
 

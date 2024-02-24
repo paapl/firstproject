@@ -1,0 +1,61 @@
+<div [formGroup]="myForm">
+  <mat-dialog-content>
+    <p>Create User</p>
+    <mat-form-field>
+      <mat-label>Id</mat-label>
+      <input  matInput
+      formArrayName="id"
+      disabled
+      >
+    </mat-form-field>
+  </mat-dialog-content>
+  <mat-dialog-content>
+    <mat-form-field>
+      <mat-label>Name</mat-label>
+      <input matInput 
+      formControlName="name">
+    </mat-form-field>
+  </mat-dialog-content>
+  <mat-dialog-content>
+    <mat-form-field>
+      <mat-label>Username</mat-label>
+      <input matInput 
+      formControlName="username">
+    </mat-form-field>
+  </mat-dialog-content>
+  <mat-dialog-content>
+    <mat-form-field>
+      <mat-label>Email</mat-label>
+      <input matInput 
+      formControlName="email">
+    </mat-form-field>
+  </mat-dialog-content>
+  <mat-dialog-content>
+    <mat-form-field>
+      <mat-label>Phone</mat-label>
+      <input matInput 
+      formControlName="phone">
+    </mat-form-field>
+  </mat-dialog-content>
+  @if(!data.isEdit){
+    <mat-dialog-actions>
+      <button mat-button (click)="onNoClick()">No Thanks</button>
+
+      @if(myForm.valid){
+        <button mat-button [mat-dialog-close]="myForm.value">Create User</button>
+      } @else {
+        <button mat-button disabled>Create User</button>
+      }
+    </mat-dialog-actions>
+  } @else {
+  <mat-dialog-actions>
+    <button mat-button (click)="onNoClick()">No Thanks</button>
+
+    @if(myForm.valid){
+      <button mat-button [mat-dialog-close]="myForm.value">Save edit</button>
+    } @else {
+      <button mat-button disabled>Save edit</button>
+    }
+  </mat-dialog-actions>
+  }
+</div>

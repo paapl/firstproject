@@ -1,4 +1,4 @@
-import { Component, Inject, inject } from '@angular/core';
+import { Component, Inject, inject, OnInit } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
@@ -11,7 +11,7 @@ import {
   MatDialogActions,
   MatDialogClose,
 } from '@angular/material/dialog';
-import { IUser } from '../../interface/iuser';
+
 
 @Component({
   selector: 'app-createedituser',
@@ -26,26 +26,36 @@ import { IUser } from '../../interface/iuser';
     MatDialogActions,
     MatDialogClose,
   ],
-  templateUrl: './createedituser.component.html',
-  styleUrl: './createedituser.component.scss'
+  templateUrl: './dialogedit.component.html',
+  styleUrl: './dialogedit.component.scss'
 })
-export class CreateedituserComponent {
+export class CreateedituserComponent implements OnInit {
+
   public UserService = inject(UsersServiceService);
 
   constructor(
     public dialogRef: MatDialogRef<CreateedituserComponent>,
-    @Inject(MAT_DIALOG_DATA) public data:IUser,
+    @Inject(MAT_DIALOG_DATA) public data: {isEdit: boolean | undefined, dataUser:any},
     ) {}
 
-  onNoClick(): void {
-    this.dialogRef.close();
-  }
+    ngOnInit(): void {
+      if(this.data.isEdit){
+        this.pathValueForm();
+      } 
+    }
+    onNoClick(): void {
+      this.dialogRef.close();
+    }
 
-  myForm = new FormGroup({
-    id: new FormControl( this.data.id, Validators.required),
-    name: new FormControl('12313', Validators.required),
-    username: new FormControl('123', Validators.required),
-    email: new FormControl('123', Validators.required),
-    phone: new FormControl('123', Validators.required),
-  })
+    myForm = new FormGroup({
+      id: new FormControl( new Date().getTime(), Validators.required),
+      name: new FormControl( '' , Validators.required),
+      username: new FormControl( '', Validators.required),
+      email: new FormControl('', Validators.required),
+      phone: new FormControl('', Validators.required),
+    })
+    
+    pathValueForm(){
+      this.myForm.patchValue(this.data.dataUser)
+    }
 }
