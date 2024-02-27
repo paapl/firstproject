@@ -2,10 +2,10 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { IUser } from '../../../interface/iuser';
-import { CreateedituserComponent } from '../../createedituser/dialogedit.component';
 import { MatDialog } from '@angular/material/dialog';
 import { UsersServiceService } from '../../../services/users-service.service';
 import { map, takeUntil } from 'rxjs';
+import { CreateedituserComponent } from '../../dialogedit/dialogedit.component';
 
 @Component({
   selector: 'app-user-card',
@@ -19,7 +19,7 @@ import { map, takeUntil } from 'rxjs';
   templateUrl: './user-card.component.html',
   styleUrl: './user-card.component.scss'
 })
-export class UserCardComponent {
+export class UserCardComponent{
   constructor(
     public dialod: MatDialog,
     public userService: UsersServiceService,
@@ -44,6 +44,5 @@ export class UserCardComponent {
       takeUntil(dialogEdit.afterClosed())
       }),
     ).subscribe();
-  }
-  
+  }  
 }
