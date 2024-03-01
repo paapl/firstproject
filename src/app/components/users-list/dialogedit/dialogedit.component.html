@@ -25,7 +25,6 @@
       <mat-label>Phone</mat-label>
       <input matInput
       min="5"
-      required
       formControlName="phone">
       @if (!myForm.controls.phone.valid && myForm.controls.phone.touched) {
         <mat-hint>Minlength number 5 </mat-hint>
@@ -35,22 +34,12 @@
   @if(!data.isEdit){
     <mat-dialog-actions>
       <button mat-button (click)="onNoClick()">No Thanks</button>
-
-      @if(myForm.valid){
-        <button mat-button [mat-dialog-close]="myForm.value">Create User</button>
-      } @else {
-        <button mat-button disabled>Create User</button>
-      }
+      <button mat-button [mat-dialog-close]="myForm.value" [disabled]="!myForm.valid">Create User</button>
     </mat-dialog-actions>
   } @else {
   <mat-dialog-actions>
     <button mat-button (click)="onNoClick()">No Thanks</button>
-
-    @if(myForm.valid){
-      <button mat-button [mat-dialog-close]="myForm.value">Save edit</button>
-    } @else {
-      <button mat-button disabled>Save edit</button>
-    }
+    <button mat-button [mat-dialog-close]="myForm.value" [disabled]="!myForm.valid">Save edit</button>
   </mat-dialog-actions>
   }
 </div>

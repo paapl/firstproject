@@ -3,7 +3,6 @@ import { MatButtonModule } from '@angular/material/button';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field'
-import { UsersServiceService } from '../../services/users-service.service';
 import {
   MAT_DIALOG_DATA,
   MatDialogRef,
@@ -29,12 +28,10 @@ import {
   templateUrl: './dialogedit.component.html',
   styleUrl: './dialogedit.component.scss'
 })
-export class CreateedituserComponent implements OnInit {
-
-  public UserService = inject(UsersServiceService);
+export class DialogEdit implements OnInit {
 
   constructor(
-    public dialogRef: MatDialogRef<CreateedituserComponent>,
+    private dialogRef: MatDialogRef<DialogEdit>,
     @Inject(MAT_DIALOG_DATA) public data: {isEdit: boolean | undefined, dataUser:any},
     ) {}
 

@@ -1,14 +1,15 @@
 import { Component, OnInit, inject } from '@angular/core';
-import { UsersServiceService } from '../../services/users-service.service';
 import { UserApiServiceService } from '../../services/user-api-service.service';
-import { UserCardComponent } from '../UI/user-card/user-card.component';
+import { UserCardComponent } from './user-card/user-card.component';
 import { AsyncPipe, NgForOf } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
-import { CreateedituserComponent } from '../dialogedit/dialogedit.component';
+import { DialogEdit } from './dialogedit/dialogedit.component';
 import { MatDialog } from '@angular/material/dialog';
-import { map, take } from 'rxjs';
-import { IUser } from '../../interface/iuser';
-import { UserlocalstorageService } from '../../services/userlocalstorage.service';
+import { Observable, map, take } from 'rxjs';
+import { IUser } from '../../interface/user.inteface';
+import { Store } from '@ngrx/store';
+import { selectUsers } from './+state/users.selectors';
+import * as userAcrion from './+state/users.action';
 
 
 @Component({
@@ -16,52 +17,42 @@ import { UserlocalstorageService } from '../../services/userlocalstorage.service
   standalone: true,
   imports: [
     UserCardComponent,
-    CreateedituserComponent,
+    DialogEdit,
     NgForOf,
     AsyncPipe,
     MatButtonModule,
   ],
   templateUrl: './users-list.component.html',
   styleUrl: './users-list.component.scss',
-  providers: [UsersServiceService, UserApiServiceService]
+  providers: [ UserApiServiceService]
 })
 
-export class UsersListComponent{
-
-  constructor(public dialog: MatDialog){
-    this.setLocal();
+export class UsersListComponent implements OnInit{
+  users$!: Observable<IUser[]>;
+  
+  constructor( public dialog: MatDialog, private readonly store: Store ){
+    this.users$ = this.store.select(selectUsers);
   }
-  public usersService = inject(UsersServiceService);
-  public localService = inject(UserlocalstorageService);
 
-  // Удаление карточки
+  ngOnInit(): void {
+      this.store.dispatch(userAcrion.loadUsers())
+  }
+
   deleteUser(id:number): void{
-    this.usersService.deleteUser(id);
+    this.store.dispatch(userAcrion.deleteUsers({id}))
   }
-
-  // Открытие формы создания
+  
   openDialog():void{
-    const dialogRef = this.dialog.open(CreateedituserComponent, {data:{}});
+    const dialogRef = this.dialog.open(DialogEdit, {data:{}});
     dialogRef.afterClosed().pipe(
       map((myForm: IUser) => {
-        if(myForm != undefined){
-          this.usersService.addUser(myForm)
-          console.log(myForm)
+        if(myForm !== undefined){
+          this.store.dispatch(userAcrion.createUsers({newUser: myForm}))
         }
       }),
       take(1)
     ).subscribe()
   }
-    //Localstorage
-
-    setLocal(): void{
-      const data = this.localService.getItem();
-      if(data === null){
-        this.usersService.loadUserss();
-      } else {
-        this.usersService.local(data);
-      }
-    }
 }
 
 
