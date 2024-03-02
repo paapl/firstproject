@@ -6,12 +6,10 @@ export const USERS_FEATURE_KEY = 'users';
 
 export interface UsersState{
     users: IUser[],
-    error: any | null,
 }
 
 export const initialState: UsersState = {
     users: [],
-    error: null,
 }
 
 export const usersFeature = createFeature({
@@ -26,29 +24,17 @@ export const usersFeature = createFeature({
         ...state, 
         users: users
     })),
-    on(UsersActions.loadUsersError, (state, {errorMsg}) => ({
-        ...state,
-        error: errorMsg
-    })),
 
     // Add User
     on(UsersActions.createUsersSucces, (state, {newUser}) => ({
         ...state, 
         users: [...state.users, newUser]
     })),
-    on(UsersActions.createUsersError, (state, {errorMsg}) => ({
-        ...state, 
-        error: errorMsg
-    })),
 
     // Delete User
     on(UsersActions.deleteUsersSucces, (state, {id}) => ({
         ...state, 
-        users: state.users.filter(users => users.id !== id)
-    })),
-    on(UsersActions.deleteUsersError, (state, {errorMsg}) => ({
-        ...state,
-        error: errorMsg
+        users: [...state.users.filter(user => user.id !== id)],
     })),
     
     // Edit User
@@ -56,9 +42,5 @@ export const usersFeature = createFeature({
         ...state, 
         users: state.users.map( user => user.id === editData.id ? editData : user )
     })),
-    on(UsersActions.editUserError, (state, {errorMsg}) => ({
-        ...state, 
-        error: errorMsg
-    }))
     )
 })

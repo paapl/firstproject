@@ -8,8 +8,9 @@ import { MatDialog } from '@angular/material/dialog';
 import { Observable, map, take } from 'rxjs';
 import { IUser } from '../../interface/user.inteface';
 import { Store } from '@ngrx/store';
-import { selectUsers } from './+state/users.selectors';
 import * as userAcrion from './+state/users.action';
+import { UsersService } from '../../services/users.service';
+import { selectUsers } from './+state/users.selectors';
 
 
 @Component({
@@ -27,17 +28,18 @@ import * as userAcrion from './+state/users.action';
   providers: [ UserApiServiceService]
 })
 
-export class UsersListComponent implements OnInit{
-  users$!: Observable<IUser[]>;
-  
-  constructor( public dialog: MatDialog, private readonly store: Store ){
-    this.users$ = this.store.select(selectUsers);
+export class UsersListComponent implements OnInit{ 
+  public readonly usersService = inject(UsersService);
+  user$!: Observable<IUser[]>;
+  constructor( private dialog: MatDialog, private readonly store: Store ){
   }
 
   ngOnInit(): void {
-      this.store.dispatch(userAcrion.loadUsers())
+    this.user$ = this.store.select(selectUsers);
+    this.store.dispatch(userAcrion.loadUsers());
+    this.usersService.upDataLocalStorage();
   }
-
+  
   deleteUser(id:number): void{
     this.store.dispatch(userAcrion.deleteUsers({id}))
   }
