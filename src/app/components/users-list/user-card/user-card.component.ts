@@ -1,13 +1,13 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
-import { IUser } from '../../../interface/user.inteface';
+import { UserInteface } from '../../../interface/user.inteface';
 import { MatDialog } from '@angular/material/dialog';
 import { Observable, map, takeUntil } from 'rxjs';
-import { DialogEdit } from '../dialogedit/dialogedit.component';
+import { UsersChangeWindow } from '../users-change-window/users-change-window.component';
 import { Store } from '@ngrx/store';
 import { selectUsers } from '../+state/users.selectors';
-import * as userAcrion from '../+state/users.action';
+import { usersListFacade } from '../+state/users.facade';
 
 @Component({
   selector: 'app-user-card',
@@ -16,19 +16,19 @@ import * as userAcrion from '../+state/users.action';
   imports: [
     MatButtonModule,
     MatCardModule,
-    DialogEdit
+    UsersChangeWindow
   ],
   templateUrl: './user-card.component.html',
   styleUrl: './user-card.component.scss'
 })
 export class UserCardComponent{
-  users$!: Observable<IUser[]>;
+  users$!: Observable<UserInteface[]>;
 
   constructor(
-    private dialog: MatDialog, private readonly store: Store,)
+    private dialog: MatDialog, private readonly store: Store, private readonly usersFacade: usersListFacade)
     {this.users$ = this.store.select(selectUsers);}
 
-  @Input() user!: IUser;
+  @Input() user!: UserInteface;
   @Output() id = new EventEmitter<number>();
 
   getIdCardDel(id:number){
@@ -36,11 +36,11 @@ export class UserCardComponent{
   }
 
   openDialog(){
-    const dialogEdit = this.dialog.open(DialogEdit, {data: {isEdit: true, dataUser: this.user}});
+    const dialogEdit = this.dialog.open(UsersChangeWindow, {data: {isEdit: true, dataUser: this.user}});
     dialogEdit.afterClosed().pipe(
-      map((edit: IUser) => {
+      map((edit: UserInteface) => {
         if(edit !== undefined){
-          this.store.dispatch(userAcrion.editUsers({editData: edit}))
+          this.usersFacade.editUser(edit);
         }
       takeUntil(dialogEdit.afterClosed())
       }),

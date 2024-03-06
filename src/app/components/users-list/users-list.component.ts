@@ -3,22 +3,21 @@ import { UserApiServiceService } from '../../services/user-api-service.service';
 import { UserCardComponent } from './user-card/user-card.component';
 import { AsyncPipe, NgForOf } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
-import { DialogEdit } from './dialogedit/dialogedit.component';
+import { UsersChangeWindow } from './users-change-window/users-change-window.component';
 import { MatDialog } from '@angular/material/dialog';
 import { Observable, map, take } from 'rxjs';
-import { IUser } from '../../interface/user.inteface';
-import { Store } from '@ngrx/store';
-import * as userAcrion from './+state/users.action';
+import { UserInteface } from '../../interface/user.inteface';
 import { UsersService } from '../../services/users.service';
-import { selectUsers } from './+state/users.selectors';
-
+import { UsersfilterComponent } from './usersfilter/usersfilter.component';
+import { usersListFacade } from './+state/users.facade';
 
 @Component({
   selector: 'app-users-list',
   standalone: true,
   imports: [
     UserCardComponent,
-    DialogEdit,
+    UsersfilterComponent,
+    UsersChangeWindow,
     NgForOf,
     AsyncPipe,
     MatButtonModule,
@@ -29,27 +28,28 @@ import { selectUsers } from './+state/users.selectors';
 })
 
 export class UsersListComponent implements OnInit{ 
+
   public readonly usersService = inject(UsersService);
-  user$!: Observable<IUser[]>;
-  constructor( private dialog: MatDialog, private readonly store: Store ){
-  }
+  public user$!: Observable<UserInteface[]>;
+
+  constructor(private dialog: MatDialog, private readonly usersFacade: usersListFacade){}
 
   ngOnInit(): void {
-    this.user$ = this.store.select(selectUsers);
-    this.store.dispatch(userAcrion.loadUsers());
+    this.user$ = this.usersFacade.users$;
+    this.usersFacade.loadUsers();
     this.usersService.upDataLocalStorage();
   }
   
   deleteUser(id:number): void{
-    this.store.dispatch(userAcrion.deleteUsers({id}))
+    this.usersFacade.deleteUser(id);
   }
   
   openDialog():void{
-    const dialogRef = this.dialog.open(DialogEdit, {data:{}});
+    const dialogRef = this.dialog.open(UsersChangeWindow, {data:{}});
     dialogRef.afterClosed().pipe(
-      map((myForm: IUser) => {
+      map((myForm: UserInteface) => {
         if(myForm !== undefined){
-          this.store.dispatch(userAcrion.createUsers({newUser: myForm}))
+          this.usersFacade.createUser(myForm);
         }
       }),
       take(1)

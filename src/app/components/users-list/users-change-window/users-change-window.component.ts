@@ -1,4 +1,4 @@
-import { Component, Inject, inject, OnInit } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
@@ -10,6 +10,7 @@ import {
   MatDialogActions,
   MatDialogClose,
 } from '@angular/material/dialog';
+import { UserInteface } from '../../../interface/user.inteface';
 
 
 @Component({
@@ -25,25 +26,24 @@ import {
     MatDialogActions,
     MatDialogClose,
   ],
-  templateUrl: './dialogedit.component.html',
-  styleUrl: './dialogedit.component.scss'
+  templateUrl: './users-change-window.component.html',
+  styleUrl: './users-change-window.component.scss'
 })
-export class DialogEdit implements OnInit {
+export class UsersChangeWindow implements OnInit {
 
   constructor(
-    private dialogRef: MatDialogRef<DialogEdit>,
-    @Inject(MAT_DIALOG_DATA) public data: {isEdit: boolean | undefined, dataUser:any},
+    private dialogRef: MatDialogRef<UsersChangeWindow>,
+    @Inject(MAT_DIALOG_DATA) public data: {isEdit: boolean, dataUser: UserInteface},
     ) {}
-
+    
     ngOnInit(): void {
       if(this.data.isEdit){
-        this.pathValueForm();
+        this.myForm.patchValue(this.data.dataUser)
       } 
     }
     onNoClick(): void {
       this.dialogRef.close();
     }
-
     myForm = new FormGroup({
       id: new FormControl( new Date().getTime(), Validators.required),
       name: new FormControl( '' , Validators.required),
@@ -51,8 +51,4 @@ export class DialogEdit implements OnInit {
       email: new FormControl('', [Validators.required, Validators.email]),
       phone: new FormControl('', [Validators.required, Validators.minLength(5)]),
     })
-    
-    pathValueForm(){
-      this.myForm.patchValue(this.data.dataUser)
-    }
 }

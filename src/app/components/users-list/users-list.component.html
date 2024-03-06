@@ -1,8 +1,8 @@
+<app-usersfilter></app-usersfilter>
 <ng-container *ngFor="let user of user$ | async">
     <app-user-card [user]="user" (id)="deleteUser($event)"></app-user-card>
 </ng-container>
-
-<button class="card__create" (click)="openDialog()">
+<button  class="card__create" (click)="openDialog()">
     <span class="card__icn">+</span>
 </button>
 
