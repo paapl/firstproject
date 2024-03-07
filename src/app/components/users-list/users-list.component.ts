@@ -1,15 +1,15 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { UserApiServiceService } from '../../services/user-api-service.service';
 import { UserCardComponent } from './user-card/user-card.component';
 import { AsyncPipe, NgForOf } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { UsersChangeWindow } from './users-change-window/users-change-window.component';
 import { MatDialog } from '@angular/material/dialog';
-import { Observable, map, take } from 'rxjs';
+import { Observable, Subscription, map, take, tap } from 'rxjs';
 import { UserInteface } from '../../interface/user.inteface';
-import { UsersService } from '../../services/users.service';
 import { UsersfilterComponent } from './usersfilter/usersfilter.component';
 import { usersListFacade } from './+state/users.facade';
+import { UserlocalstorageService } from '../../services/userlocalstorage.service';
 
 @Component({
   selector: 'app-users-list',
@@ -27,17 +27,29 @@ import { usersListFacade } from './+state/users.facade';
   providers: [ UserApiServiceService]
 })
 
-export class UsersListComponent implements OnInit{ 
+export class UsersListComponent implements OnInit, OnDestroy{ 
 
-  public readonly usersService = inject(UsersService);
+  private readonly usersLocalStorage = inject(UserlocalstorageService);
+  public subscripion!: Subscription;
   public user$!: Observable<UserInteface[]>;
 
-  constructor(private dialog: MatDialog, private readonly usersFacade: usersListFacade){}
+  constructor(
+    private dialog: MatDialog, 
+    private readonly usersFacade: usersListFacade,
+    ){}
 
   ngOnInit(): void {
-    this.user$ = this.usersFacade.users$;
     this.usersFacade.loadUsers();
-    this.usersService.upDataLocalStorage();
+    this.user$ = this.usersFacade.users$;
+    this.upDataLocalStorage();
+  }
+  ngOnDestroy(): void {
+    this.subscripion.unsubscribe()
+  }
+  upDataLocalStorage(){
+    this.subscripion = this.user$.pipe(
+      tap((data) => this.usersLocalStorage.setItem(data))
+    ).subscribe()
   }
   
   deleteUser(id:number): void{
