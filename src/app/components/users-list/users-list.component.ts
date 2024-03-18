@@ -32,11 +32,8 @@ export class UsersListComponent implements OnInit, OnDestroy{
   private readonly usersLocalStorage = inject(UserlocalstorageService);
   public subscripion!: Subscription;
   public user$!: Observable<UserInteface[]>;
-
-  constructor(
-    private dialog: MatDialog, 
-    private readonly usersFacade: usersListFacade,
-    ){}
+  private dialogCreateUsers = inject(MatDialog);
+  private readonly usersFacade = inject(usersListFacade);
 
   ngOnInit(): void {
     this.usersFacade.loadUsers();
@@ -46,6 +43,7 @@ export class UsersListComponent implements OnInit, OnDestroy{
   ngOnDestroy(): void {
     this.subscripion.unsubscribe()
   }
+
   upDataLocalStorage(){
     this.subscripion = this.user$.pipe(
       tap((data) => this.usersLocalStorage.setItem(data))
@@ -57,7 +55,7 @@ export class UsersListComponent implements OnInit, OnDestroy{
   }
   
   openDialog():void{
-    const dialogRef = this.dialog.open(UsersChangeWindow, {data:{}});
+    const dialogRef = this.dialogCreateUsers.open(UsersChangeWindow, {data:{}});
     dialogRef.afterClosed().pipe(
       map((myForm: UserInteface) => {
         if(myForm !== undefined){

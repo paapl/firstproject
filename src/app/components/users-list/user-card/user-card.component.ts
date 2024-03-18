@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { UserInteface } from '../../../interface/user.inteface';
@@ -23,10 +23,12 @@ import { usersListFacade } from '../+state/users.facade';
 })
 export class UserCardComponent{
   users$!: Observable<UserInteface[]>;
+  private readonly store = inject(Store);
+  private readonly usersFacade = inject(usersListFacade)
 
-  constructor(
-    private dialog: MatDialog, private readonly store: Store, private readonly usersFacade: usersListFacade)
-    {this.users$ = this.store.select(selectUsers);}
+  constructor(private dialogEditUsers: MatDialog){
+    this.users$ = this.store.select(selectUsers);
+  }
 
   @Input() user!: UserInteface;
   @Output() id = new EventEmitter<number>();
@@ -36,7 +38,7 @@ export class UserCardComponent{
   }
 
   openDialog(){
-    const dialogEdit = this.dialog.open(UsersChangeWindow, {data: {isEdit: true, dataUser: this.user}});
+    const dialogEdit = this.dialogEditUsers.open(UsersChangeWindow, {data: {isEdit: true, dataUser: this.user}});
     dialogEdit.afterClosed().pipe(
       map((edit: UserInteface) => {
         if(edit !== undefined){

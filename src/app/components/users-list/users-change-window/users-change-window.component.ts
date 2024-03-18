@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnInit, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
@@ -32,7 +32,7 @@ import { UserInteface } from '../../../interface/user.inteface';
 export class UsersChangeWindow implements OnInit {
 
   constructor(
-    private dialogRef: MatDialogRef<UsersChangeWindow>,
+    private dialogChangeUsers: MatDialogRef<UsersChangeWindow>,
     @Inject(MAT_DIALOG_DATA) public data: {isEdit: boolean, dataUser: UserInteface},
     ) {}
     
@@ -42,7 +42,7 @@ export class UsersChangeWindow implements OnInit {
       } 
     }
     onNoClick(): void {
-      this.dialogRef.close();
+      this.dialogChangeUsers.close();
     }
     myForm = new FormGroup({
       id: new FormControl( new Date().getTime(), Validators.required),

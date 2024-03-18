@@ -12,9 +12,9 @@ export const loadUsers = createEffect(
 
         return actions$.pipe(
             ofType(UserAction.loadUsers),
-            switchMap(() => 
-                usersService.initialUsers().pipe(
-                    map((dataUsers:UserInteface[]) => UserAction.loadUsersSuccess({users: dataUsers})),        
+            switchMap(
+                () => usersService.initialUsers().pipe(
+                    map((dataUsers:UserInteface[]) => UserAction.loadUsersSuccess({users: dataUsers})),     
                 )
             )
         )

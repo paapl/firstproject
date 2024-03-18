@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { usersListFacade } from '../+state/users.facade';
 import { MatInputModule } from '@angular/material/input';
@@ -19,7 +19,7 @@ import { MatButtonModule } from '@angular/material/button';
   styleUrl: './usersfilter.component.scss'
 })
 export class UsersfilterComponent {
-  constructor(private readonly usersFacade: usersListFacade){}
+  private readonly usersFacade = inject(usersListFacade)
 
   mySearch = new FormGroup({
     name: new FormControl('')
