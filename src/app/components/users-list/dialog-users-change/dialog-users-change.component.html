@@ -33,6 +33,6 @@
   </mat-dialog-content>
   <mat-dialog-actions>
     <button mat-button (click)="closeDialog()">No Thanks</button>
-    <button mat-button [mat-dialog-close]="myForm.value" [disabled]="!myForm.valid">{{ data?.isEdit ? "Save edit" : "Create User"}}</button>
+    <button mat-button [mat-dialog-close]="myForm.value" [disabled]="!myForm.valid">{{ isEdit ? "Save edit" : "Create User"}}</button>
   </mat-dialog-actions>
 </div>

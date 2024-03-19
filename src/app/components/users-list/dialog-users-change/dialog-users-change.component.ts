@@ -33,12 +33,15 @@ export class DialogUsersChange implements OnInit {
 
   constructor(
     private matDialogRef: MatDialogRef<DialogUsersChange>,
-    @Inject(MAT_DIALOG_DATA) public readonly data?: {isEdit: boolean, dataUser: User},
+    @Inject(MAT_DIALOG_DATA) private readonly User?: User,
     ) {}
     
+    get isEdit(): boolean{
+      return Boolean(this.User);
+    }
     ngOnInit(): void {
-      if(this.data?.isEdit){
-        this.myForm.patchValue(this.data?.dataUser);
+      if(this.User){
+        this.myForm.patchValue(this.User);
       } 
     }
     closeDialog(): void {

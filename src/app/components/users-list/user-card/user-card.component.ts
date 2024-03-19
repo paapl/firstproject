@@ -33,7 +33,7 @@ export class UserCardComponent{
   }
 
   openDialog(){
-    const dialogEdit = this.matDialog.open(DialogUsersChange, {data: {isEdit: true, dataUser: this.user}});
+    const dialogEdit = this.matDialog.open(DialogUsersChange, { data: this.user });
     dialogEdit.afterClosed().pipe(
       tap((editUser: User) => {
         if(editUser){
