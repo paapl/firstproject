@@ -11,7 +11,6 @@ import { User } from '../interface/user.inteface';
 export class UsersService {
   private readonly userLocalStorage = inject(LocalStorageService);
   private readonly userApiService = inject(ApiService);
-  private readonly key = LOCAL_STORAGE_USERS_KEY;
 
   initialUsers(): Observable<User[]>{
     const storageValue = this.userLocalStorage.getItem(LOCAL_STORAGE_USERS_KEY);
@@ -20,7 +19,7 @@ export class UsersService {
       return of(storageValue);
     } else {
       return this.userApiService.get<User[]>(`/users`).pipe(
-        tap((dataUser: User[]) => this.userLocalStorage.setItem(this.key, dataUser)),
+        tap((dataUser: User[]) => this.userLocalStorage.setItem(LOCAL_STORAGE_USERS_KEY, dataUser)),
       )
     }
   }

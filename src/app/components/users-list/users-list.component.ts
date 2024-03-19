@@ -59,7 +59,7 @@ export class UsersListComponent implements OnDestroy{
     const dialogRef = this.matDialogCreateUser.open(DialogUsersChange);
     dialogRef.afterClosed().pipe(
       map((myForm: User) => {
-        if(myForm !== undefined){
+        if(myForm){
           this.UsersFacade.createUser(myForm);
         }
       }),

@@ -9,9 +9,9 @@ export class LocalStorageService {
     localStorage.setItem(key, JSON.stringify(value))
   }
 
-  public getItem<T>(key: string): any {
+  public getItem(key: string): any {
     const getValueStorage = localStorage.getItem(key);
-
+    
     if(getValueStorage !== null){
       const valueStorage = JSON.parse(getValueStorage)
       return valueStorage;
