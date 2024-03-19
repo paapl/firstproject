@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit, inject } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
@@ -10,11 +10,11 @@ import {
   MatDialogActions,
   MatDialogClose,
 } from '@angular/material/dialog';
-import { UserInteface } from '../../../interface/user.inteface';
+import { User } from '../../../interface/user.inteface';
 
 
 @Component({
-  selector: 'app-createedituser',
+  selector: 'app-dialog-users-change',
   standalone: true,
   imports: [
     FormsModule, 
@@ -26,23 +26,23 @@ import { UserInteface } from '../../../interface/user.inteface';
     MatDialogActions,
     MatDialogClose,
   ],
-  templateUrl: './users-change-window.component.html',
-  styleUrl: './users-change-window.component.scss'
+  templateUrl: './dialog-users-change.component.html',
+  styleUrl: './dialog-users-change.component.scss'
 })
-export class UsersChangeWindow implements OnInit {
+export class DialogUsersChange implements OnInit {
 
   constructor(
-    private dialogChangeUsers: MatDialogRef<UsersChangeWindow>,
-    @Inject(MAT_DIALOG_DATA) public data: {isEdit: boolean, dataUser: UserInteface},
+    private matDialogRef: MatDialogRef<DialogUsersChange>,
+    @Inject(MAT_DIALOG_DATA) public readonly data?: {isEdit: boolean, dataUser: User},
     ) {}
     
     ngOnInit(): void {
-      if(this.data.isEdit){
-        this.myForm.patchValue(this.data.dataUser)
+      if(this.data?.isEdit){
+        this.myForm.patchValue(this.data?.dataUser);
       } 
     }
-    onNoClick(): void {
-      this.dialogChangeUsers.close();
+    closeDialog(): void {
+      this.matDialogRef.close();
     }
     myForm = new FormGroup({
       id: new FormControl( new Date().getTime(), Validators.required),

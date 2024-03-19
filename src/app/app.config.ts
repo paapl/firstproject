@@ -7,9 +7,9 @@ import { provideHttpClient } from '@angular/common/http';
 import { provideStore } from '@ngrx/store';
 import { provideEffects } from '@ngrx/effects';
 import * as UsersEffects from './components/users-list/+state/users.effects'
-import { usersFeature } from './reducers';
+import * as UsersFeature from './components/users-list/+state/users.reducers'
 import { provideStoreDevtools } from '@ngrx/store-devtools';
-
+import { API_URL } from './services/api-url.token';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -17,9 +17,10 @@ export const appConfig: ApplicationConfig = {
     provideAnimationsAsync(),
     provideHttpClient(),
     provideStore({
-        ['users']: usersFeature.reducer
+        ['users']: UsersFeature.usersFeature.reducer
     }),
     provideEffects(UsersEffects),
-    provideStoreDevtools({ maxAge: 25, logOnly: !isDevMode() })
+    provideStoreDevtools({ maxAge: 25, logOnly: !isDevMode() }),
+    { provide: API_URL, useValue: 'https://jsonplaceholder.typicode.com' }
 ]
 };

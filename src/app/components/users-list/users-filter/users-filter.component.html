@@ -1,17 +1,17 @@
-<div class="search" [formGroup]="mySearch">
+<div class="search">
     <mat-form-field class="example-full-width">
         <input 
         matInput
         class="search__inp" 
         type="text" 
         placeholder="Я ищу...."
-        formControlName="name"
+        [formControl]="usersName"
         >
     </mat-form-field>
     <button 
     mat-stroked-button
     class="search__btn" 
     type="submit" 
-    (click)="searchName(mySearch)"
+    (click)="searchName()"
     >Поиск</button>
 </div>

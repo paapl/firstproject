@@ -1,13 +1,11 @@
 import { Component, EventEmitter, Input, Output, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
-import { UserInteface } from '../../../interface/user.inteface';
+import { User } from '../../../interface/user.inteface';
 import { MatDialog } from '@angular/material/dialog';
-import { Observable, map, takeUntil } from 'rxjs';
-import { UsersChangeWindow } from '../users-change-window/users-change-window.component';
-import { Store } from '@ngrx/store';
-import { selectUsers } from '../+state/users.selectors';
-import { usersListFacade } from '../+state/users.facade';
+import { take, tap } from 'rxjs';
+import { DialogUsersChange } from '../dialog-users-change/dialog-users-change.component';
+import { UsersListFacade } from '../+state/users.facade';
 
 @Component({
   selector: 'app-user-card',
@@ -16,36 +14,33 @@ import { usersListFacade } from '../+state/users.facade';
   imports: [
     MatButtonModule,
     MatCardModule,
-    UsersChangeWindow
+    DialogUsersChange
   ],
   templateUrl: './user-card.component.html',
   styleUrl: './user-card.component.scss'
 })
 export class UserCardComponent{
-  users$!: Observable<UserInteface[]>;
-  private readonly store = inject(Store);
-  private readonly usersFacade = inject(usersListFacade)
+  private readonly UsersFacade = inject(UsersListFacade)
+  public readonly users$  = this.UsersFacade.users$;
+  
+  constructor(private matDialog: MatDialog){}
 
-  constructor(private dialogEditUsers: MatDialog){
-    this.users$ = this.store.select(selectUsers);
-  }
-
-  @Input() user!: UserInteface;
+  @Input({required: true}) user!: User;
   @Output() id = new EventEmitter<number>();
 
-  getIdCardDel(id:number){
+  getUserId(id:number){
     this.id.emit(id);
   }
 
   openDialog(){
-    const dialogEdit = this.dialogEditUsers.open(UsersChangeWindow, {data: {isEdit: true, dataUser: this.user}});
+    const dialogEdit = this.matDialog.open(DialogUsersChange, {data: {isEdit: true, dataUser: this.user}});
     dialogEdit.afterClosed().pipe(
-      map((edit: UserInteface) => {
-        if(edit !== undefined){
-          this.usersFacade.editUser(edit);
+      tap((editUser: User) => {
+        if(editUser){
+          this.UsersFacade.editUser(editUser, editUser.id);
         }
-      takeUntil(dialogEdit.afterClosed())
       }),
+      take(1),
     ).subscribe();
   }  
 }

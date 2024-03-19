@@ -1,65 +1,66 @@
-import { Component, OnDestroy, OnInit, inject } from '@angular/core';
-import { UserApiServiceService } from '../../services/user-api-service.service';
+import { Component, OnDestroy, inject } from '@angular/core';
 import { UserCardComponent } from './user-card/user-card.component';
 import { AsyncPipe, NgForOf } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
-import { UsersChangeWindow } from './users-change-window/users-change-window.component';
+import { DialogUsersChange } from './dialog-users-change/dialog-users-change.component';
 import { MatDialog } from '@angular/material/dialog';
-import { Observable, Subscription, map, take, tap } from 'rxjs';
-import { UserInteface } from '../../interface/user.inteface';
-import { UsersfilterComponent } from './usersfilter/usersfilter.component';
-import { usersListFacade } from './+state/users.facade';
-import { UserlocalstorageService } from '../../services/userlocalstorage.service';
+import { Subscription, map, take, tap } from 'rxjs';
+import { User } from '../../interface/user.inteface';
+import { UsersFilterComponent } from './users-filter/users-filter.component';
+import { UsersListFacade } from './+state/users.facade';
+import { LocalStorageService } from '../../services/local-storage.service';
+import { LOCAL_STORAGE_USERS_KEY } from '../../constants/constants';
+import { API_URL } from '../../services/api-url.token';
 
 @Component({
   selector: 'app-users-list',
   standalone: true,
   imports: [
     UserCardComponent,
-    UsersfilterComponent,
-    UsersChangeWindow,
+    UsersFilterComponent,
+    DialogUsersChange,
     NgForOf,
     AsyncPipe,
     MatButtonModule,
   ],
   templateUrl: './users-list.component.html',
   styleUrl: './users-list.component.scss',
-  providers: [ UserApiServiceService]
 })
 
-export class UsersListComponent implements OnInit, OnDestroy{ 
+export class UsersListComponent implements OnDestroy{ 
 
-  private readonly usersLocalStorage = inject(UserlocalstorageService);
-  public subscripion!: Subscription;
-  public user$!: Observable<UserInteface[]>;
-  private dialogCreateUsers = inject(MatDialog);
-  private readonly usersFacade = inject(usersListFacade);
-
-  ngOnInit(): void {
-    this.usersFacade.loadUsers();
-    this.user$ = this.usersFacade.users$;
-    this.upDataLocalStorage();
+  constructor(){
+    this.UsersFacade.loadUsers();
+    this.removeDataLocalStorage();
   }
+
+  private readonly UsersLocalStorage = inject(LocalStorageService);
+  private matDialogCreateUser = inject(MatDialog);
+  private readonly UsersFacade = inject(UsersListFacade);
+  public readonly user$ = this.UsersFacade.users$;
+  private readonly key = LOCAL_STORAGE_USERS_KEY;
+  public subscripion!: Subscription;
+  
   ngOnDestroy(): void {
     this.subscripion.unsubscribe()
   }
 
-  upDataLocalStorage(){
+  removeDataLocalStorage(){
     this.subscripion = this.user$.pipe(
-      tap((data) => this.usersLocalStorage.setItem(data))
+      tap((data) => this.UsersLocalStorage.setItem(this.key, data))
     ).subscribe()
   }
   
   deleteUser(id:number): void{
-    this.usersFacade.deleteUser(id);
+    this.UsersFacade.deleteUser(id);
   }
   
   openDialog():void{
-    const dialogRef = this.dialogCreateUsers.open(UsersChangeWindow, {data:{}});
+    const dialogRef = this.matDialogCreateUser.open(DialogUsersChange);
     dialogRef.afterClosed().pipe(
-      map((myForm: UserInteface) => {
+      map((myForm: User) => {
         if(myForm !== undefined){
-          this.usersFacade.createUser(myForm);
+          this.UsersFacade.createUser(myForm);
         }
       }),
       take(1)
